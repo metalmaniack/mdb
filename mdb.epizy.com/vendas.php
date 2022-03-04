@@ -2,7 +2,7 @@
 include 'conexao.php';
 session_start();
 ?>
-<!doctype html>
+<!DOCTYPE html5>
 <html lang="pt-br">
 
 <head>
@@ -130,35 +130,37 @@ session_start();
                 <div class="form-group p-2 col-2">
                     <label for="status">Status:</label>
                     <select class="form-control" name="txtStatus" require>
-                        <option class="label">Selecione o status</option>
-                        <!--Prenche o campo status-->
-                        <?php
-                        if (isset($result['status'])) {
-                            echo "<option selected value=" . $result['status'] . ">" . $result['status'] . "</option>";
-                        } else {
-                            echo "<option value='aberto'>aberto</option>";
-                            echo "<option value='fechado'>fechado</option>";
-                        }
-                        ?>
+                        <optgroup label="Selecione o status">
+                            <!--Prenche o campo status-->
+                            <?php
+                            if (isset($result['status'])) {
+                                echo "<option selected value=" . $result['status'] . ">" . $result['status'] . "</option>";
+                            } else {
+                                echo "<option value='aberto'>aberto</option>";
+                                echo "<option value='fechado'>fechado</option>";
+                            }
+                            ?>
+                        </optgroup>
                     </select>
                 </div>
 
                 <div class="form-group p-2 col-3">
                     <label for="cliente">Cliente:</label>
                     <select class="form-control" name="txtCliente" require>
-                        <option class="label">Selecione o cliente</option>
-                        <!--Prenche o campo clientes-->
-                        <?php
-                        if (!isset($_GET['idVenda'])) {
-                            $select = "Select * From clientes Order By id;";
-                            $query = mysqli_query($con, $select);
-                            while ($result = mysqli_fetch_assoc($query)) {
-                                echo "<option value=" . $result['nome'] . ">" . $result['nome'] . "</option>";
+                        <optgroup label="Selecione o cliente">
+                            <!--Prenche o campo clientes-->
+                            <?php
+                            if (!isset($_GET['idVenda'])) {
+                                $select = "Select * From clientes Order By id;";
+                                $query = mysqli_query($con, $select);
+                                while ($result = mysqli_fetch_assoc($query)) {
+                                    echo "<option value=" . $result['nome'] . ">" . $result['nome'] . "</option>";
+                                }
+                            } else {
+                                echo "<option selected value=" . $result['fk_idCliente'] . ">" . $result['fk_idCliente'] . "</option>";
                             }
-                        } else {
-                            echo "<option selected value=" . $result['fk_idCliente'] . ">" . $result['fk_idCliente'] . "</option>";
-                        }
-                        ?>
+                            ?>
+                        </optgroup>
                     </select>
                 </div>
                 <div class="form-group p-2 col-2">
@@ -166,6 +168,13 @@ session_start();
                     <input type="text" class="form-control" name="txtTotal"
                         value="<?php echo !isset($total) ? "" : $total ?>" readonly>
                 </div>
+            </div>
+            <!--Botões de vendas-->
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary ml-2" name="btnNovaVenda">Nova Venda</button>
+                <button type="button" class="btn btn-secondary ml-2" name="btnBuscarVenda" data-toggle="modal"
+                    data-target="#buscarVendas">Buscar venda</button>
+                <button type="submit" class="btn btn-success ml-2" name="btnFinalizar">Finalizar venda</button>
             </div>
             <!-- Modal Buscar Vendas-->
             <div class="modal fade" id="buscarVendas" tabindex="-1" role="dialog" aria-labelledby="BuscarVendas"
@@ -214,7 +223,6 @@ session_start();
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary" name="btnNovaVenda">Nova Venda</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
                         </div>
                     </div>
@@ -311,14 +319,11 @@ session_start();
                     </div>
                 </div>
             </div>
-            <!--Botões do formulário-->
+            <!--Botões dos produtos do formulário-->
             <div class="form-group">
-                <button type="button" class="btn btn-primary ml-2" name="btnBuscarVenda" data-toggle="modal"
-                    data-target="#buscarVendas">Buscar venda</button>
-                <button type="submit" class="btn btn-warning ml-3" name="btnAlterar">Alterar item</button>
-                <button type="submit" class="btn btn-danger ml-3" name="btnExcluir">Excluir item</button>
-                <button type="submit" class="btn btn-secondary ml-3" name="btnFinalizar">Finalizar venda</button>
-                <button type="submit" class="btn btn-info ml-3" name="btnLimpar">Limpar</button>
+                <button type="submit" class="btn btn-warning ml-2" name="btnAlterar">Alterar item</button>
+                <button type="submit" class="btn btn-danger ml-2" name="btnExcluir">Excluir item</button>
+                <button type="submit" class="btn btn-info ml-2" name="btnLimpar">Limpar</button>
             </div>
         </form>
         <br>
@@ -359,7 +364,6 @@ session_start();
                                 echo "<td><a href=vendas.php?ref=" . $result['fk_idProduto'] . "&idVenda=" . $_GET['idVenda'] . "&nome=" . $result['nome'] . "&preco=" . $result['preco'] . "&quantidade=" . $result['quantidade'] . " type='submit' class='btn btn-info ml-3' name='btnSelecionar'><span data-feather='check-square'></a></td>";
                                 echo "</tr>";
                             }
-                            
                         }
                         ?>
                     </tbody>

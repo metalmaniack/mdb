@@ -65,6 +65,9 @@ try {
             $msg = "fechado";
             header('Location: compras.php?msg=' . base64_encode($msg));
         }
+        else {
+            header("Location: compras.php?idCompra=" .$resultCompras['idCompra']);
+        }
     }
     //botão alterar produto(apenas a quantidade pode ser alterada)
     else if (isset($_POST['btnAlterar'])) {
@@ -147,39 +150,39 @@ try {
     //botão finalizar compra
     else if (isset($_POST['btnFinalizar'])) {
         
-        if ($idCompra != "" && $fornecedor !="") {
+        if (($idCompra != "") && ($fornecedor !="") && ($status == "aberto")) {
             //buscando os valores na tabela compras_items
             $selectCompras_Items = "Select * from compras_items where fk_idCompra = '$idCompra'";
             $queryCompras_Items = mysqli_query($con, $selectCompras_Items);
-            $resultCompras_Items = mysqli_fetch_assoc($queryCompras_Items);
             
             //verifica se foi inserido algum item
-            if ($resultCompras_Items['quantidade'] > 0) {
-                //atualiza o status da compra
-                $update = "Update compras set status = 'fechado' where idCompra= '$idCompra'";
-                $query = mysqli_query($con, $update);
-                
-                //busca os dados do estoque da tabela produtos 
-                $selectP = "Select * from produtos";
-                $queryP = mysqli_query($con,$selectP);
-                $resultP = mysqli_fetch_assoc($queryP);
-                
-                //atualiza o estoque 
-                $updateProdutos = "Update produtos Set estoque = ".$resultP['estoque']." + ".$resultCompras_Items['quantidade']." where id='".$resultCompras_Items['fk_idProduto']."'";
-                $queryProdutos = mysqli_query($con, $updateProdutos);
-   
-                if ($query) {
-                    //mensagem caso funcione
-                    $msg = "success";
-                    $acao = "finalizar";
-                    header("Location: compras.php?msg=" . base64_encode($msg) . "&acao=" . base64_encode($acao));
+            while($resultCompras_Items = mysqli_fetch_assoc($queryCompras_Items)) {  
+                if ($resultCompras_Items['quantidade'] > 0) {
+                    //atualiza o status da compra
+                    $update = "Update compras set status = 'fechado' where idCompra= '$idCompra'";
+                    $query = mysqli_query($con, $update);
+                    
+                    //atualiza o estoque 
+                    $updateProdutos = "Update produtos Set estoque = (estoque + ".$resultCompras_Items['quantidade'].") where id='".$resultCompras_Items['fk_idProduto']."'";
+                    $queryProdutos = mysqli_query($con, $updateProdutos);
+    
+                    if ($query) {
+                        //mensagem caso funcione
+                        $msg = "success";
+                        $acao = "finalizar";
+                        header("Location: compras.php?msg=" . base64_encode($msg) . "&acao=" . base64_encode($acao));
+                    }
+                    else {
+                        //mensagem caso de erro
+                        $msg = "danger";
+                        $acao = "finalizar";
+                        header("Location: compras.php?msg=" . base64_encode($msg));
+                    }
+                }
+                else { 
+                    header("Location: compras.php");
                 }
             } 
-            else {
-                //mensagem caso de erro
-                $msg = "danger";
-                header("Location: compras.php?msg=" . base64_encode($msg));
-            }
         }
         else { 
             header("Location: compras.php");

@@ -2,7 +2,7 @@
 include 'conexao.php';
 session_start();
 ?>
-<!DOCTYPE html>
+<!DOCTYPE html5>
 <html lang="pt-br">
 
 <head>
@@ -129,6 +129,7 @@ session_start();
                         <th>Email</th>
                         <th>Login</th>
                         <th>Senha</th>
+                        <th>Acesso</th>
                         <th class="pl-5">Ação</th>
                     </tr>
                 </thead>
@@ -147,6 +148,7 @@ session_start();
                         echo "<td>" . $result['telefone'] . "</td>";
                         echo "<td>" . $result['email'] . "</td>";
                         echo "<td>" . $result['login'] . "</td>";
+                        echo "<td>" . $result['senha'] . "</td>";
                         echo "<td>" . $result['acesso'] . "</td>";
                         echo "<td><a href=usuarios.php?ref=" . base64_encode($result['id']) . " type='submit' class='btn btn-info ml-3' name='btnSelecionar'>Selecionar</a></td>";
                         echo "</tr>";
@@ -161,6 +163,7 @@ session_start();
                         echo "<td>" . base64_decode($_GET['telefone']) . "</td>";
                         echo "<td>" . base64_decode($_GET['email']) . "</td>";
                         echo "<td>" . base64_decode($_GET['login']) . "</td>";
+                        echo "<td>" . base64_decode($_GET['senha']) . "</td>";
                         echo "<td>" . base64_decode($_GET['acesso']) . "</td>";
                         echo "<td><a href=usuarios.php?ref=" . base64_encode($_GET['id']) . " type='submit' class='btn btn-info ml-3' name='btnSelecionar'>Selecionar</a></td>";
                         echo "</tr>";

@@ -2,7 +2,7 @@
 include 'conexao.php';
 session_start();
 ?>
-<!doctype html>
+<!DOCTYPE html5>
 <html lang="pt-br">
 
 <head>
@@ -44,7 +44,7 @@ session_start();
                     <label for="idVenda">ID Venda:</label>
                     <input type="text" class="form-control" name="txtIdVenda">
                 </div>
-                <div class="form-group pt-3 mt-3">
+                <div class="form-group pt-3 mt-4">
                     <button type="submit" class="btn btn-primary ml-2" name="btnBuscaVenda"><span
                             data-feather="search"></button>
                 </div>

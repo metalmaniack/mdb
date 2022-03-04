@@ -2,7 +2,7 @@
 include 'conexao.php';
 session_start();
 ?>
-<!doctype html>
+<!DOCTYPE html5>
 <html lang="pt-br">
 
 <head>
@@ -46,13 +46,13 @@ session_start();
                     <input type="text" class="form-control" name="txtIdCompra">
                 </div>
 
-                <div class="form-group pt-3 mt-3">
+                <div class="form-group pt-3 mt-4">
                     <button type="submit" class="btn btn-primary ml-2" name="btnBuscaCompra"><span
                             data-feather="search"></button>
                 </div>
             </div>
         </form>
-        <h4>Tabela de vendas </h4>
+        <h4>Tabela de Compras </h4>
         <!--Tabela com os produtos inseridos(carrinho de compras)-->
         <div class="table-responsive">
             <table class="table table-hover table-sm">

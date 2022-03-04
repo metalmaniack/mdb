@@ -2,7 +2,7 @@
 include 'conexao.php';
 session_start();
 ?>
-<!doctype html>
+<!DOCTYPE html5>
 <html lang="pt-br">
 
 <head>
@@ -12,7 +12,8 @@ session_start();
     <title>Compras</title>
 
     <!-- CSS do Bootstrap -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link href="css/dashboard.css" rel="stylesheet">
 </head>
 
@@ -129,7 +130,7 @@ session_start();
                 <div class="form-group p-2 col-2">
                     <label for="status">Status:</label>
                     <select class="form-control" name="txtStatus" require>
-                        <option class="label">Selecione o status</option>
+                        <optgroup label="Selecione o status">
                         <!--Prenche o campo status-->
                         <?php
                         if (isset($result['status'])) {
@@ -139,15 +140,16 @@ session_start();
                             echo "<option value='fechado'>fechado</option>";
                         }
                         ?>
+                        </optgroup>
                     </select>
                 </div>
 
                 <div class="form-group p-2 col-3">
                     <label for="Fornecedor">Fornecedor:</label>
                     <select class="form-control" name="txtFornecedor" require>
-                        <option class="label">Selecione o fornecedor</option>
-                        <!--Prenche o campo fornecedors-->
-                        <?php
+                        <optgroup label="Selecione o fornecedor">
+                            <!--Prenche o campo fornecedors-->
+                            <?php
                         if (!isset($_GET['idCompra'])) {
                             $select = "Select * From fornecedores Order By id;";
                             $query = mysqli_query($con, $select);
@@ -158,6 +160,7 @@ session_start();
                             echo "<option selected value=" . $result['fk_idFornecedor'] . ">" . $result['fk_idFornecedor'] . "</option>";
                         }
                         ?>
+                        </optgroup>
                     </select>
                 </div>
                 <div class="form-group p-2 col-2">
@@ -165,6 +168,13 @@ session_start();
                     <input type="text" class="form-control" name="txtTotal"
                         value="<?php echo !isset($total) ? "" : $total ?>" readonly>
                 </div>
+            </div>
+            <!--Botões de compra-->
+            <div class="form-group">
+                <button type="submit" class="btn btn-secondary ml-2" name="btnNovaCompra">Nova compra</button>
+                <button type="button" class="btn btn-primary ml-2" name="btnBuscarCompra" data-toggle="modal"
+                    data-target="#buscarCompras">Buscar Compra</button>
+                <button type="submit" class="btn btn-success ml-2" name="btnFinalizar">Finalizar compra</button>
             </div>
             <!-- Modal Buscar compras-->
             <div class="modal fade" id="buscarCompras" tabindex="-1" role="dialog" aria-labelledby="Buscarcompras"
@@ -213,7 +223,6 @@ session_start();
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary" name="btnNovaCompra">Nova compra</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
                         </div>
                     </div>
@@ -279,8 +288,8 @@ session_start();
                                         </thead>
                                         <tbody>
                                             <?php
-                                              if (!isset($_GET['idVenda'])){
-                                                $_GET['idVenda'] = "";
+                                              if (!isset($_GET['idCompra'])){
+                                                $_GET['idCompra'] = "";
                                             }
                                             else{
                                                 //instrução select 
@@ -310,14 +319,11 @@ session_start();
                     </div>
                 </div>
             </div>
-            <!--Botões do formulário-->
+            <!--Botões de produtos-->
             <div class="form-group">
-                <button type="button" class="btn btn-primary ml-2" name="btnBuscarCompra" data-toggle="modal"
-                    data-target="#buscarCompras">Buscar Compra</button>
-                <button type="submit" class="btn btn-warning ml-3" name="btnAlterar">Alterar item</button>
-                <button type="submit" class="btn btn-danger ml-3" name="btnExcluir">Excluir item</button>
-                <button type="submit" class="btn btn-secondary ml-3" name="btnFinalizar">Finalizar compra</button>
-                <button type="submit" class="btn btn-info ml-3" name="btnLimpar">Limpar</button>
+                <button type="submit" class="btn btn-warning ml-2" name="btnAlterar">Alterar item</button>
+                <button type="submit" class="btn btn-danger ml-2" name="btnExcluir">Excluir item</button>
+                <button type="submit" class="btn btn-info ml-2" name="btnLimpar">Limpar</button>
             </div>
         </form>
         <br>
@@ -370,9 +376,15 @@ session_start();
     <?php include 'footer.php' ?>
 
     <!-- JavaScript do Bootstrap -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+    </script>
     <script>
     window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')
     </script>

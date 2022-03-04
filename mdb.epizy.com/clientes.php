@@ -2,7 +2,7 @@
 include 'conexao.php';
 session_start();
 ?>
-<!DOCTYPE html>
+<!DOCTYPE html5>
 <html lang="pt-br">
 
 <head>

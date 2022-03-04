@@ -66,7 +66,7 @@ try {
             header('Location: vendas.php?msg=' . base64_encode($msg));
         }
         else {
-            header('Location: vendas.php');
+            header('Location: vendas.php?idVenda=' . $idVenda);
         }
     }
     //botão alterar produto(apenas a quantidade pode ser alterada)
@@ -153,45 +153,44 @@ try {
     }
     //botão finalizar venda
     else if (isset($_POST['btnFinalizar'])) {
-        
-        if ($idVenda != "" && $cliente !="") {
+        //verifica de os campos estão preenchidos
+        if (($idVenda != "") && ($cliente !="") && ($status=="aberto")) {
             //buscando os valores na tabela vendas_items
            $selectVendas_Items = "Select * from vendas_items where fk_idVenda = '$idVenda'";
            $queryVendas_Items = mysqli_query($con, $selectVendas_Items);
-           $resultVendas_Items = mysqli_fetch_assoc($queryVendas_Items);
-            
-            //verifica se foi inserido algum item
-            if ($resultVendas_Items['quantidade'] > 0) {
-                //atualiza o status da venda
-                $update = "Update vendas set status = 'fechado' where idVenda= '$idVenda'";
-                $query = mysqli_query($con, $update);
-                
-                //busca os dados do estoque da tabela produtos 
-                $selectP = "Select * from produtos";
-                $queryP = mysqli_query($con,$selectP);
-                $resultP = mysqli_fetch_assoc($queryP);
-                
-                //atualiza o estoque 
-                $updateProdutos = "Update produtos set estoque = ".$resultP['estoque']." - ".$resultVendas_Items['quantidade']." where id='".$resultVendas_Items['fk_idProduto']."'";
-                $queryProdutos = mysqli_query($con, $updateProdutos);
+           while($resultVendas_Items = mysqli_fetch_assoc($queryVendas_Items)) {  
+                //verifica se foi inserido algum item
+                if ($resultVendas_Items['quantidade'] > 0) {
+                    //atualiza o status da venda
+                    $update = "Update vendas set status = 'fechado' where idVenda= '$idVenda'";
+                    $query = mysqli_query($con, $update);
+                    
+                    //atualiza o estoque 
+                    $updateProdutos = "Update produtos Set estoque = (estoque - ".$resultVendas_Items['quantidade'].") where id='".$resultVendas_Items['fk_idProduto']."'"; 
+                    $queryProdutos = mysqli_query($con, $updateProdutos);
 
-                if ($query) {
-                    //mensagem caso funcione
-                    $msg = "success";
-                    $acao = "finalizar";
-                    header("Location: vendas.php?msg=" . base64_encode($msg) . "&acao=" . base64_encode($acao));
+                    if ($query) {
+                        //mensagem caso funcione
+                        $msg = "success";
+                        $acao = "finalizar";
+                        header("Location: vendas.php?msg=" . base64_encode($msg) . "&acao=" . base64_encode($acao));
+                    }
+                    else {
+                        //mensagem não caso funcione
+                        $msg = "danger";
+                        $acao = "finalizar";
+                        header("Location: vendas.php?msg=" . base64_encode($msg) . "&acao=" . base64_encode($acao));
+                    }
                 }
-            } 
-            else {
-                //mensagem caso de erro
-                $msg = "danger";
-                $acao = "finalizar";
-                header("Location: vendas.php?msg=" . base64_encode($msg));
+                else {
+                    header("Location: vendas.php");
+                }
             }
         }
         else {
             header("Location: vendas.php");
         }
+        
     }
     else if (isset($_POST['btnLimpar'])) {
         $idProduto = "";
