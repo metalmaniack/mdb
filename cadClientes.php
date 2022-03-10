@@ -19,19 +19,14 @@ try {
             $result = mysqli_fetch_assoc($query);
             $result = true;
             if ($result) {
-                //armazenando os dados na session
-                $_SESSION['nome'] = $result['nome'];
-                $_SESSION['cpf'] = $resul['cpf'];
-                $_SESSION['endereco'] = $result['endereco'];
-                $_SESSION['telefone'] = $result['telefone'];
-                $_SESSION['email'] = $result['email'];
+                $acao="inserir";
                 //mensagem caso funcione
                 $msg = "success";
-                header("Location: clientes.php?msg=" . base64_encode($msg));
+                header("Location: clientes.php?msg=" . base64_encode($msg) . "&acao=".base64_encode($acao));
             } else {
                 //mensagem caso de erro
                 $msg = "danger";
-                header("Location: clientes.php?msg=" . base64_encode($msg));
+                header("Location: clientes.php?msg=" . base64_encode($msg) . "&acao=".base64_encode($acao));
             }
         }
         else {
@@ -40,14 +35,27 @@ try {
     }
     //select
     else if (isset($_POST['btnBuscar'])) {
-        if ($_POST['txtNome'] != "" || $_POST['txtCpf'] != "") {
-            $select = "Select * From clientes where nome='$nome' OR cpf='$cpf';";
+        //verifica qual o parâmetro pesquisado
+        if($_POST['txtNome'] != '') {
+            $varBusca = 'NOME';
+        } else if($_POST['txtCpf'] != '') {
+            $varBusca = 'CPF';
+        } else if($_POST['txtEndereco'] != '') {
+            $varBusca = 'ENDERECO';
+        } else if($_POST['txtTelefone'] != '') {
+            $varBusca = 'TELEFONE';
+        } else if($_POST['txtEmail'] != '') {
+            $varBusca = 'EMAIL';
+        }
+        if ($_POST['txtNome'] != "" || $_POST['txtCpf'] != "" || $_POST['txtEndereco'] != "" || $_POST['txtTelefone'] != "" || $_POST['txtEmail'] != "") {
+            $select = "Select * From clientes where nome='$nome' OR cpf='$cpf' OR endereco='$endereco' OR telefone='$telefone' OR email='$email'";
             $query = mysqli_query($con, $select);
             $result = mysqli_fetch_assoc($query);
             if (mysqli_num_rows($query) >= 1) {
                 //variavel para usar o método GET na pagina clientes.php
                 $acao = "buscar";
                 header("Location: clientes.php?acao=" . base64_encode($acao) .
+                    "&varBusca=" . base64_encode($varBusca) .
                     "&id=" . base64_encode($result['id']) .
                     "&nome=" . base64_encode($result['nome']) .
                     "&cpf=" . base64_encode($result['cpf']) .
@@ -70,13 +78,14 @@ try {
             $result = mysqli_fetch_assoc($query);
             $result=true;
             if ($result) {
+                $acao="alterar";
                 //mensagem caso funcione
                 $msg = "success";
-                header("Location: clientes.php?msg=" . base64_encode($msg));
+                header("Location: clientes.php?msg=" . base64_encode($msg). "&acao=".base64_encode($acao));
             } else {
                 //mensagem caso de erro
                 $msg = "danger";
-                header("Location: clientes.php?msg=" . base64_encode($msg));
+                header("Location: clientes.php?msg=" . base64_encode($msg). "&acao=".base64_encode($acao));
             }
         }
         else {
@@ -91,13 +100,14 @@ try {
             $result = mysqli_fetch_assoc($query);
             $result=true;
             if ($result) {
+                $acao = "excluir";
                 //mensagem caso funcione
                 $msg = "success";
-                header("Location: clientes.php?msg=" . base64_encode($msg));
+                header("Location: clientes.php?msg=" . base64_encode($msg). "&acao=".base64_encode($acao));
             } else {
                 //mensagem caso de erro
                 $msg = "danger";
-                header("Location: clientes.php?msg=" . base64_encode($msg));
+                header("Location: clientes.php?msg=" . base64_encode($msg). "&acao=".base64_encode($acao));
             }
         }
         else {

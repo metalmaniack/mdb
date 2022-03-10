@@ -86,6 +86,20 @@ session_start();
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
+            <?php } else if (base64_decode($_GET['msg']) == "success" && base64_decode($_GET['acao']) == "excluirVenda") { ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                Venda excluída com sucesso!
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <?php } else if (base64_decode($_GET['msg']) == "danger" && base64_decode($_GET['acao']) == "excluirVenda") { ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                Venda não excluída com sucesso, tente novamente!
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
             <?php } else if (base64_decode($_GET['msg']) == "success" && base64_decode($_GET['acao']) == "finalizar") { ?>
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 Venda realizada com sucesso!
@@ -174,6 +188,7 @@ session_start();
                 <button type="submit" class="btn btn-primary ml-2" name="btnNovaVenda">Nova Venda</button>
                 <button type="button" class="btn btn-secondary ml-2" name="btnBuscarVenda" data-toggle="modal"
                     data-target="#buscarVendas">Buscar venda</button>
+                <button type="submit" class="btn btn-danger ml-2" name="btnExcluirVenda">Excluir venda</button>    
                 <button type="submit" class="btn btn-success ml-2" name="btnFinalizar">Finalizar venda</button>
             </div>
             <!-- Modal Buscar Vendas-->

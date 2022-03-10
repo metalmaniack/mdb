@@ -151,6 +151,38 @@ try {
             header('Location: vendas.php');
         }
     }
+    else if(isset($_POST['btnExcluirVenda'])){
+        if($idVenda !=""){
+            //buscando o id da tabela vendas
+            $selectVendas = ("Select * from vendas where idVenda='$idVenda'");
+            $queryVendas = mysqli_query($con, $selectVendas);
+            $resultVendas = mysqli_fetch_assoc($queryVendas);
+               //excluindo item selecionado
+               $delete = "Delete from vendas where idVenda=" . $resultVendas['idVenda'] . ";";
+               $query = mysqli_query($con, $delete);
+               if ($query) {
+                   //intrução select na tabela vendas
+                   $select = "Select * from vendas where idVenda='$idVenda'";
+                   $queryVendas = mysqli_query($con,$select);
+                   $resultVendas = mysqli_fetch_assoc($queryVendas);
+   
+                   //mensagem caso funcione
+                   $msg = "success";
+                   $acao = "excluirVenda";
+                   header("Location: vendas.php?idVenda=" .$resultVendas['idVenda']. "&msg=" . base64_encode($msg) . "&acao=" . base64_encode($acao));
+               } 
+               else {
+                   //mensagem caso de erro
+                   $msg = "danger";
+                   $acao = "excluir";
+                   header("Location: vendas.php?msg=" . base64_encode($msg));
+                }
+        }
+        
+        else {
+            header('Location: vendas.php');
+        }
+    }
     //botão finalizar venda
     else if (isset($_POST['btnFinalizar'])) {
         //verifica de os campos estão preenchidos

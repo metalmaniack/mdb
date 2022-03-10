@@ -14,6 +14,7 @@
             if ($result) {
                 session_start();
                 $_SESSION['usuario'] = $result['nome'];
+                $_SESSION['acesso'] = $result['acesso'];
                 //vai para a página inicial
                 header("Location: home.php");
             } 

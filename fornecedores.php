@@ -12,7 +12,8 @@ session_start();
     <title>Fornecedores</title>
 
     <!-- CSS do Bootstrap -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link href="css/dashboard.css" rel="stylesheet">
 
 </head>
@@ -43,21 +44,52 @@ session_start();
             <?php if(!isset($_GET['msg'])){
                 $_GET['msg']="";
             ?>
-            <?php } else if (base64_decode($_GET['msg']) == "success") { ?>
+            <?php } else if (base64_decode($_GET['msg']) == "success" && base64_decode($_GET['acao']) == "inserir") { ?>
             <div class="alert alert-success alert-dismissible fade show" role="alert">
-                Fornecedor cadastrado(alterado/excluído) com sucesso!
+                Fornecedor cadastrado com sucesso!
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <?php } else if (base64_decode($_GET['msg'] == "danger")) { ?>
+            <?php } else if (base64_decode($_GET['msg'] == "danger") && base64_decode($_GET['acao']) == "inserir") { ?>
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                Fornecedor não foi cadastrado(alterado/excluído) com sucesso,tente novamente!
+                Fornecedor não foi cadastrado com sucesso,tente novamente!
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            
+            <?php } else if (base64_decode($_GET['msg']) == "success" && base64_decode($_GET['acao']) == "alterar") { ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                Fornecedor alterado com sucesso!
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <?php } else if (base64_decode($_GET['msg'] == "danger") && base64_decode($_GET['acao']) == "alterar") { ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                Fornecedor não foi alterado com sucesso,tente novamente!
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            
+            <?php } else if (base64_decode($_GET['msg']) == "success" && base64_decode($_GET['acao']) == "excluir") { ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                Fornecedor excluído com sucesso!
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <?php } else if (base64_decode($_GET['msg'] == "danger") && base64_decode($_GET['acao']) == "excluir") { ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                Fornecedor não foi excluído com sucesso,tente novamente!
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <?php } ?>
+            
             <!--Verifica se foi passado o id pelo metodo GET-->
             <?php
              if (!isset($_GET['ref'])) {
@@ -127,9 +159,12 @@ session_start();
                 <tbody>
 
                     <?php
-                    //instrução select 
-                    $select = "Select * from fornecedores;";
-                    $query = mysqli_query($con, $select);
+                     if (!isset($_GET['acao'])) {
+                        $_GET['acao'] = "";
+                    
+                        //instrução select 
+                        $select = "Select * from fornecedores;";
+                        $query = mysqli_query($con, $select);
                     
                         //retorna os dados existentes na tabela
                         while ($result = mysqli_fetch_assoc($query)) {
@@ -143,22 +178,86 @@ session_start();
                             echo "<td><a href=fornecedores.php?ref=" . base64_encode($result['id']) . " type='submit' class='btn btn-info ml-3' name='btnSelecionar'>Selecionar</a></td>";
                             echo "</tr>";
                         }
-                        if (!isset($_GET['acao'])) {
-                            $_GET['acao'] = "";
+                    }
+                    else if (base64_decode($_GET['acao']) == "inserir") {
+                        $select = "Select * from fornecedores;"; 
+                        $query = mysqli_query($con, $select);
+                        //retorna os dados existentes na tabela
+                        while ($result = mysqli_fetch_assoc($query)) {
+                            echo "<tr>";
+                            echo "<td>" . $result['id'] . "</td>";
+                            echo "<td>" . $result['nome'] . "</td>";
+                            echo "<td>" . $result['telefone'] . "</td>";
+                            echo "<td>" . $result['email'] . "</td>";
+                            echo "<td>" . $result['endereco'] . "</td>";
+                            echo "<td>" . $result['cnpj'] . "</td>";
+                            echo "<td><a href=fornecedores.php?ref=" . base64_encode($result['id']) . " type='submit' class='btn btn-info ml-3' name='btnSelecionar'>Selecionar</a></td>";
+                            echo "</tr>";
+                        }
+                    }
+                    else if (base64_decode($_GET['acao']) == "buscar") {
+                        $varBusca = base64_decode($_GET['varBusca']);
+                        if($varBusca == 'NOME') {
+                            $select = "Select * from fornecedores WHERE nome ='" . base64_decode($_GET['nome']) . "'";
+                        }
+                        else if($varBusca == 'TELEFONE') {
+                            $select = "Select * from fornecedores WHERE telefone ='" . base64_decode($_GET['telefone']) . "'";
                         } 
-                        else if (base64_decode($_GET['acao']) == "buscar") {
-                        echo "<tr>";
-                        echo "<td>" . base64_decode($_GET['id']) . "</td>";
-                        echo "<td>" . base64_decode($_GET['nome']) . "</td>";
-                        echo "<td>" . base64_decode($_GET['telefone']) . "</td>";
-                        echo "<td>" . base64_decode($_GET['email']) . "</td>";
-                        echo "<td>" . base64_decode($_GET['endereco']) . "</td>";
-                        echo "<td>" . base64_decode($_GET['cnpj']) . "</td>";
-                        echo "<td><a href=fornecedores.php?ref=" . base64_encode($_GET['id']) . " type='submit' class='btn btn-info ml-3' name='btnSelecionar'>Selecionar</a></td>";
-                        echo "</tr>";
+                        else if($varBusca == 'EMAIL') {
+                            $select = "Select * from fornecedores WHERE email ='" . base64_decode($_GET['email']) . "'";
+                        } 
+                        else if($varBusca == 'ENDERECO') {
+                            $select = "Select * from fornecedores WHERE endereco ='" . base64_decode($_GET['endereco']) . "'";
+                        } else if($varBusca == 'CNPJ') {
+                            $select = "Select * from fornecedores WHERE cnpj = '" . base64_decode($_GET['cnpj']) . "'";
+                        }  
+                        $query = mysqli_query($con, $select);
+                        //retorna os dados existentes na tabela
+                        while ($result = mysqli_fetch_assoc($query)) {
+                            echo "<tr>";
+                            echo "<td>" . $result['id'] . "</td>";
+                            echo "<td>" . $result['nome'] . "</td>";
+                            echo "<td>" . $result['telefone'] . "</td>";
+                            echo "<td>" . $result['email'] . "</td>";
+                            echo "<td>" . $result['endereco'] . "</td>";
+                            echo "<td>" . $result['cnpj'] . "</td>";
+                            echo "<td><a href=fornecedores.php?ref=" . base64_encode($result['id']) . " type='submit' class='btn btn-info ml-3' name='btnSelecionar'>Selecionar</a></td>";
+                            echo "</tr>";
+                        }
+                    }
+                    else if (base64_decode($_GET['acao']) == "alterar") {
+                        $select = "Select * from fornecedores;"; 
+                        $query = mysqli_query($con, $select);
+                        //retorna os dados existentes na tabela
+                        while ($result = mysqli_fetch_assoc($query)) {
+                            echo "<tr>";
+                            echo "<td>" . $result['id'] . "</td>";
+                            echo "<td>" . $result['nome'] . "</td>";
+                            echo "<td>" . $result['telefone'] . "</td>";
+                            echo "<td>" . $result['email'] . "</td>";
+                            echo "<td>" . $result['endereco'] . "</td>";
+                            echo "<td>" . $result['cnpj'] . "</td>";
+                            echo "<td><a href=fornecedores.php?ref=" . base64_encode($result['id']) . " type='submit' class='btn btn-info ml-3' name='btnSelecionar'>Selecionar</a></td>";
+                            echo "</tr>";
+                        }
+                    }
+                    else if (base64_decode($_GET['acao']) == "excluir") {
+                        $select = "Select * from fornecedores;"; 
+                        $query = mysqli_query($con, $select);
+                        //retorna os dados existentes na tabela
+                        while ($result = mysqli_fetch_assoc($query)) {
+                            echo "<tr>";
+                            echo "<td>" . $result['id'] . "</td>";
+                            echo "<td>" . $result['nome'] . "</td>";
+                            echo "<td>" . $result['telefone'] . "</td>";
+                            echo "<td>" . $result['email'] . "</td>";
+                            echo "<td>" . $result['endereco'] . "</td>";
+                            echo "<td>" . $result['cnpj'] . "</td>";
+                            echo "<td><a href=fornecedores.php?ref=" . base64_encode($result['id']) . " type='submit' class='btn btn-info ml-3' name='btnSelecionar'>Selecionar</a></td>";
+                            echo "</tr>";
+                        }
                     }
                     ?>
-
                 </tbody>
             </table>
         </div>
@@ -167,9 +266,15 @@ session_start();
     <?php include 'footer.php' ?>
 
     <!-- JavaScript do Bootstrap -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+    </script>
     <script>
     window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')
     </script>

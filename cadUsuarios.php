@@ -21,18 +21,14 @@ try {
             $result = mysqli_fetch_assoc($query);
             $result = true;
             if ($result) {
-                //armazenando os dados na session
-                $_SESSION['nome'] = $nome;
-                $_SESSION['telefone'] = $telefone;
-                $_SESSION['email'] = $email;
-                $_SESSION['acesso'] = $acesso;
+                $acao = "inserir";
                 //mensagem caso funcione
                 $msg = "success";
-                header("Location: usuarios.php?msg=" . base64_encode($msg));
+                header("Location: usuarios.php?msg=" . base64_encode($msg) . "&acao=" . base64_encode($acao));
             } else {
                 //mensagem caso de erro
                 $msg = "danger";
-                header("Location: usuarios.php?msg=" . base64_encode($msg));
+                header("Location: usuarios.php?msg=" . base64_encode($msg) . "&acao=" . base64_encode($acao));
             }
         }
         else{
@@ -41,14 +37,36 @@ try {
     }
     //select
     else if (isset($_POST['btnBuscar'])) {
-        if ($_POST['txtNome'] != "" || $_POST['txtTelefone'] != "" || $_POST['txtEmail'] != "" || $_POST['txtLogin'] != "" || $_POST['txtAcesso'] != "") {
-            $select = "Select * From usuarios where nome='$nome' OR telefone='$telefone' OR email='$email' OR login='$login' OR acesso='$acesso';";
+        //verifica qual o parâmetro pesquisado
+        if($_POST['txtNome'] != '') {
+            $varBusca = 'NOME';
+        } else if($_POST['txtTelefone'] != '') {
+            $varBusca = 'TELEFONE';
+        } else if($_POST['txtEmail'] != '') {
+            $varBusca = 'EMAIL';
+        } else if($_POST['txtLogin'] != '') {
+            $varBusca = 'LOGIN';
+        } else if($_POST['txtSenha'] != '') {
+            $varBusca = 'SENHA';
+        } else if($_POST['txtAcesso'] != '') {
+            $varBusca = 'ACESSO';
+        }
+        if ($_POST['txtNome'] != "" || $_POST['txtTelefone'] != "" || $_POST['txtEmail'] != "" || $_POST['txtLogin'] != "" || $_POST['txtSenha'] != "" || $_POST['txtAcesso'] != "") {
+            $select = "Select * From usuarios where nome='$nome' OR telefone='$telefone' OR email='$email' OR login='$login' OR senha='$senha' OR acesso='$acesso';";
             $query = mysqli_query($con, $select);
             $result = mysqli_fetch_assoc($query);
             if (mysqli_num_rows($query) >= 1) {
                 //variavel para usar o método GET na pagina clientes.php
                 $acao = "buscar";
-                header("Location: usuarios.php?acao=" . base64_encode($acao) . "&id=" . base64_encode($result['id']) . "&nome=" . base64_encode($result['nome']) . "&telefone=" . base64_encode($result['telefone']) . "&email=" . base64_encode($result['email']) . "&login=" . base64_encode($result['login']) . "&acesso=" . base64_encode($result['acesso']));
+                header("Location: usuarios.php?acao=" . base64_encode($acao) .
+                "&varBusca=" . base64_encode($varBusca) . 
+                "&id=" . base64_encode($result['id']) . 
+                "&nome=" . base64_encode($result['nome']) . 
+                "&telefone=" . base64_encode($result['telefone']) . 
+                "&email=" . base64_encode($result['email']) . 
+                "&login=" . base64_encode($result['login']) . 
+                "&senha=".base64_encode($result['senha']) . 
+                "&acesso=" . base64_encode($result['acesso']));
             } else {
                 header("Location: usuarios.php");
             }
@@ -65,13 +83,14 @@ try {
             $result = mysqli_fetch_assoc($query);
             $result = true;
             if ($result) {
+                $acao = "alterar";
                 //mensagem caso funcione
                 $msg = "success";
-                header("Location: usuarios.php?msg=" . base64_encode($msg));
+                header("Location: usuarios.php?msg=" . base64_encode($msg) . "&acao=" . base64_encode($acao));
             } else {
                 //mensagem caso de erro
                 $msg = "danger";
-                header("Location: usuarios.php?msg=" . base64_encode($msg));
+                header("Location: usuarios.php?msg=" . base64_encode($msg) . "&acao=" . base64_encode($acao));
             }
         }
         else{
@@ -86,13 +105,14 @@ try {
             $result = mysqli_fetch_assoc($query);
             $result = true;
             if ($result) {
+                $acao = "excluir";
                 //mensagem caso funcione
                 $msg = "success";
-                header("Location: usuarios.php?msg=" . base64_encode($msg));
+                header("Location: usuarios.php?msg=" . base64_encode($msg) . "&acao=" . base64_encode($acao));
             } else {
                 //mensagem caso de erro
                 $msg = "danger";
-                header("Location: usuarios.php?msg=" . base64_encode($msg));
+                header("Location: usuarios.php?msg=" . base64_encode($msg) . "&acao=" . base64_encode($acao));
             }
         }
         else{

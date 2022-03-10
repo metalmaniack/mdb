@@ -147,6 +147,37 @@ try {
             header('Location: compras.php');
         }
     }
+    //botão excluir compra
+    else if (isset($_POST['btnExcluirCompra'])) {
+        if ($idCompra != "") {
+            //buscando o id da tabela compras
+            $select = "Select * from compras where idCompra='$idCompra'";
+            $queryCompras = mysqli_query($con,$select);
+            $resultCompras = mysqli_fetch_assoc($queryCompras);
+
+            //excluindo item selecionado
+            $delete = "Delete from compras where idCompra=" . $resultCompras['idCompra'] . ";";
+            $query = mysqli_query($con, $delete);
+            if ($query) {
+                //intrução select na tabela compras
+                $select = "Select * from compras where idCompra='$idCompra'";
+                $queryCompras = mysqli_query($con,$select);
+                $resultCompras = mysqli_fetch_assoc($queryCompras);
+
+                //mensagem caso funcione
+                $msg = "success";
+                $acao = "excluirCompra";
+                header("Location: compras.php?idCompra=" .$resultCompras['idCompra']. "&msg=" . base64_encode($msg) . "&acao=" . base64_encode($acao));
+            } else {
+                //mensagem caso de erro
+                $msg = "danger";
+                header("Location: compras.php?msg=" . base64_encode($msg));
+            }
+        }
+        else {
+            header('Location: compras.php');
+        }
+    }
     //botão finalizar compra
     else if (isset($_POST['btnFinalizar'])) {
         

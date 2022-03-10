@@ -86,6 +86,20 @@ session_start();
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
+            <?php } else if (base64_decode($_GET['msg']) == "success" && base64_decode($_GET['acao']) == "excluirCompra") { ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                Compra excluída com sucesso!
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <?php } else if (base64_decode($_GET['msg']) == "danger" && base64_decode($_GET['acao']) == "excluirCompra") { ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                Comprar não excluída com sucesso, tente novamente!
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
             <?php } else if (base64_decode($_GET['msg']) == "success" && base64_decode($_GET['acao']) == "finalizar") { ?>
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 Compra realizada com sucesso!
@@ -174,6 +188,7 @@ session_start();
                 <button type="submit" class="btn btn-secondary ml-2" name="btnNovaCompra">Nova compra</button>
                 <button type="button" class="btn btn-primary ml-2" name="btnBuscarCompra" data-toggle="modal"
                     data-target="#buscarCompras">Buscar Compra</button>
+                <button type="submit" class="btn btn-danger ml-2" name="btnExcluirCompra">Excluir compra</button>
                 <button type="submit" class="btn btn-success ml-2" name="btnFinalizar">Finalizar compra</button>
             </div>
             <!-- Modal Buscar compras-->
