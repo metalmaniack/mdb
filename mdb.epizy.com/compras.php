@@ -86,6 +86,20 @@ session_start();
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
+            <?php } else if (base64_decode($_GET['msg']) == "success" && base64_decode($_GET['acao']) == "excluirCompra") { ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                Compra excluída com sucesso!
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <?php } else if (base64_decode($_GET['msg']) == "danger" && base64_decode($_GET['acao']) == "excluirCompra") { ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                Comprar não excluída com sucesso, tente novamente!
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
             <?php } else if (base64_decode($_GET['msg']) == "success" && base64_decode($_GET['acao']) == "finalizar") { ?>
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 Compra realizada com sucesso!
@@ -131,8 +145,8 @@ session_start();
                     <label for="status">Status:</label>
                     <select class="form-control" name="txtStatus" require>
                         <optgroup label="Selecione o status">
-                        <!--Prenche o campo status-->
-                        <?php
+                            <!--Prenche o campo status-->
+                            <?php
                         if (isset($result['status'])) {
                             echo "<option selected value=" . $result['status'] . ">" . $result['status'] . "</option>";
                         } else {
@@ -174,6 +188,7 @@ session_start();
                 <button type="submit" class="btn btn-secondary ml-2" name="btnNovaCompra">Nova compra</button>
                 <button type="button" class="btn btn-primary ml-2" name="btnBuscarCompra" data-toggle="modal"
                     data-target="#buscarCompras">Buscar Compra</button>
+                <button type="submit" class="btn btn-danger ml-2" name="btnExcluirCompra">Excluir compra</button>
                 <button type="submit" class="btn btn-success ml-2" name="btnFinalizar">Finalizar compra</button>
             </div>
             <!-- Modal Buscar compras-->
@@ -323,7 +338,8 @@ session_start();
             <div class="form-group">
                 <button type="submit" class="btn btn-warning ml-2" name="btnAlterar">Alterar item</button>
                 <button type="submit" class="btn btn-danger ml-2" name="btnExcluir">Excluir item</button>
-                <button type="submit" class="btn btn-info ml-2" name="btnLimpar">Limpar</button>
+                <button type="button" class="btn btn-info ml-2" name="btnLimpar"
+                    onclick="limpaDadosProdutos()">Limpar</button>
             </div>
         </form>
         <br>
@@ -400,10 +416,10 @@ session_start();
     <!--Limpa os dados dos produtos-->
     <script>
     function limpaDadosProdutos() {
-        document.getElementById('txtIdProduto').value = '';
-        document.getElementById('txtProduto').value = '';
-        document.getElementById('txtPreco').value = '';
-        document.getElementById('txtQuantidade').value = '';
+        document.getElementById('txtIdProduto').value = "";
+        document.getElementById('txtNome').value = "";
+        document.getElementById('txtPreco').value = "";
+        document.getElementById('txtQuantidade').value = "";
     }
     </script>
 </body>

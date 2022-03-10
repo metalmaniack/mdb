@@ -20,19 +20,14 @@ try {
             $result = mysqli_fetch_assoc($query);
             $result = true;
             if ($result) {
-                //armazenando os dados na session
-                $_SESSION['nome'] = $nome;
-                $_SESSION['telefone'] = $telefone;
-                $_SESSION['email'] = $email;
-                $_SESSION['endereco'] = $endereco;
-                $_SESSION['cnpj'] = $cnpj;
+                $acao="inserir";
                 //mensagem caso funcione
                 $msg = "success";
-                header("Location: fornecedores.php?msg=" . base64_encode($msg));
+                header("Location: fornecedores.php?msg=" . base64_encode($msg). "&acao=" . base64_encode($acao));
             } else {
                 //mensagem caso não funcione
                 $msg = "danger";
-                header("Location: fornecedores.php?msg=" . base64_encode($msg));
+                header("Location: fornecedores.php?msg=" . base64_encode($msg) . "&acao=" . base64_encode($acao));
             }
         }
         else {
@@ -41,6 +36,18 @@ try {
     }
     //select
     else if (isset($_POST['btnBuscar'])) {
+        //verifica qual o parâmetro pesquisado
+        if($_POST['txtNome'] != '') {
+            $varBusca = 'NOME';
+        } else if($_POST['txtTelefone'] != '') {
+            $varBusca = 'TELEFONE';
+        } else if($_POST['txtEmail'] != '') {
+            $varBusca = 'EMAIL';
+        } else if($_POST['txtEndereco'] != '') {
+            $varBusca = 'ENDERECO';
+        } else if($_POST['txtCnpj'] != '') {
+            $varBusca = 'CNPJ';
+        }
         if ($_POST['txtNome'] != "" || $_POST['txtTelefone'] != "" || $_POST['txtEmail'] != "" || $_POST['txtEndereco'] != "" || $_POST['txtCnpj'] != "") {
             $select = "Select * From fornecedores where nome='$nome' OR telefone='$telefone' OR email='$email' OR endereco='$endereco' OR cnpj='$cnpj';";
             $query = mysqli_query($con, $select);
@@ -49,6 +56,7 @@ try {
                 //variavel para usar o método GET na pagina clientes.php
                 $acao = "buscar";
                 header("Location: fornecedores.php?acao=" . base64_encode($acao) .
+                    "&varBusca=" . base64_encode($varBusca) .
                     "&id=" . base64_encode($result['id']) .
                     "&nome=" . base64_encode($result['nome']) .
                     "&telefone=" . base64_encode($result['telefone']) .
@@ -71,13 +79,14 @@ try {
             $result = mysqli_fetch_assoc($query);
             $result = true;
             if ($result) {
+                $acao="alterar";
                 //mensagem caso funcione
                 $msg = "success";
-                header("Location: fornecedores.php?msg=" . base64_encode($msg));
+                header("Location: fornecedores.php?msg=" . base64_encode($msg) . "&acao=" . base64_encode($acao));
             } else {
                 //mensagem caso não funcione
                 $msg = "danger";
-                header("Location: fornecedores.php?msg=" . base64_encode($msg));
+                header("Location: fornecedores.php?msg=" . base64_encode($msg) . "&acao=" . base64_encode($acao));
             }
         }
         else {
@@ -92,13 +101,14 @@ try {
             $result = mysqli_fetch_assoc($query);
             $result=true;
             if ($result) {
+                $acao="excluir";
                 //mensagem caso funcione
                 $msg = "success";
-                header("Location: fornecedores.php?msg=" . base64_encode($msg));
+                header("Location: fornecedores.php?msg=" . base64_encode($msg) . "&acao=" . base64_encode($acao));
             } else {
                 //mensagem caso não funcione
                 $msg = "danger";
-                header("Location: fornecedores.php?msg=" . base64_encode($msg));
+                header("Location: fornecedores.php?msg=" . base64_encode($msg) . "&acao=" . base64_encode($acao));
             }
         }
         else {

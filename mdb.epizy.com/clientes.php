@@ -43,16 +43,44 @@ session_start();
             <?php if(!isset($_GET['msg'])){
                 $_GET['msg']="";
             ?>
-            <?php } else if (base64_decode($_GET['msg']) == "success") { ?>
+            <?php } else if (base64_decode($_GET['msg']) == "success" && base64_decode($_GET['acao']) == "inserir") { ?>
             <div class="alert alert-success alert-dismissible fade show" role="alert">
-                Cliente cadastrado(alterado/excluído) com sucesso!
+                Cliente cadastrado com sucesso!
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <?php } else if (base64_decode($_GET['msg']) == "danger") { ?>
+            <?php } else if (base64_decode($_GET['msg']) == "danger" && base64_decode($_GET['acao']) == "inserir") { ?>
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                Cliente não foi cadastrado(alterado/excluído) com sucesso,tente novamente!
+                Cliente não foi cadastrado com sucesso,tente novamente!
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <?php } else if (base64_decode($_GET['msg']) == "success" && base64_decode($_GET['acao']) == "alterar") { ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                Cliente alterado com sucesso!
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <?php } else if (base64_decode($_GET['msg']) == "danger" && base64_decode($_GET['acao']) == "alterar") { ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                Cliente não foi alterado com sucesso,tente novamente!
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <?php } else if (base64_decode($_GET['msg']) == "success" && base64_decode($_GET['acao']) == "excluir") { ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                Cliente excluído com sucesso!
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <?php } else if (base64_decode($_GET['msg']) == "danger" && base64_decode($_GET['acao']) == "excluir") { ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                Cliente não foi excluído com sucesso,tente novamente!
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -128,35 +156,102 @@ session_start();
                 <tbody>
 
                     <?php
-                    //instrução select 
-                    $select = "Select * from clientes;";
-                    $query = mysqli_query($con, $select);
-
-                   //retorna os dados existentes na tabela
-                    while ($result = mysqli_fetch_assoc($query)) {
-                        echo "<tr>";
-                        echo "<td>" . $result['id'] . "</td>";
-                        echo "<td>" . $result['nome'] . "</td>";
-                        echo "<td>" . $result['cpf'] . "</td>";
-                        echo "<td>" . $result['endereco'] . "</td>";
-                        echo "<td>" . $result['telefone'] . "</td>";
-                        echo "<td>" . $result['email'] . "</td>";
-                        echo "<td><a href=clientes.php?ref=" . base64_encode($result['id']) . " type='submit' class='btn btn-info ml-3' name='btnSelecionar'>Selecionar</a></td>";
-                        echo "</tr>";
-                    }
                     if(!isset($_GET['acao'])){
                         $_GET['acao']="";
-                    } 
+                    
+                        //instrução select 
+                        $select = "Select * from clientes;";
+                        $query = mysqli_query($con, $select);
+                        //retorna os dados existentes na tabela
+                        while ($result = mysqli_fetch_assoc($query)) {
+                            echo "<tr>";
+                            echo "<td>" . $result['id'] . "</td>";
+                            echo "<td>" . $result['nome'] . "</td>";
+                            echo "<td>" . $result['cpf'] . "</td>";
+                            echo "<td>" . $result['endereco'] . "</td>";
+                            echo "<td>" . $result['telefone'] . "</td>";
+                            echo "<td>" . $result['email'] . "</td>";
+                            echo "<td><a href=clientes.php?ref=" . base64_encode($result['id']) . " type='submit' class='btn btn-info ml-3' name='btnSelecionar'>Selecionar</a></td>";
+                            echo "</tr>";
+                        }
+                    }
+                    else if (base64_decode($_GET['acao']) == "inserir") {
+                        //instrução select 
+                        $select = "Select * from clientes;";
+                        $query = mysqli_query($con, $select);
+                        //retorna os dados existentes na tabela
+                        while ($result = mysqli_fetch_assoc($query)) {
+                            echo "<tr>";
+                            echo "<td>" . $result['id'] . "</td>";
+                            echo "<td>" . $result['nome'] . "</td>";
+                            echo "<td>" . $result['cpf'] . "</td>";
+                            echo "<td>" . $result['endereco'] . "</td>";
+                            echo "<td>" . $result['telefone'] . "</td>";
+                            echo "<td>" . $result['email'] . "</td>";
+                            echo "<td><a href=clientes.php?ref=" . base64_encode($result['id']) . " type='submit' class='btn btn-info ml-3' name='btnSelecionar'>Selecionar</a></td>";
+                            echo "</tr>";
+                        }
+                    }
                     else if (base64_decode($_GET['acao']) == "buscar") {
-                        echo "<tr>";
-                        echo "<td>" . base64_decode($_GET['id']) . "</td>";
-                        echo "<td>" . base64_decode($_GET['nome']) . "</td>";
-                        echo "<td>" . base64_decode($_GET['cpf']) . "</td>";
-                        echo "<td>" . base64_decode($_GET['endereco']) . "</td>";
-                        echo "<td>" . base64_decode($_GET['telefone']) . "</td>";
-                        echo "<td>" . base64_decode($_GET['email']) . "</td>";
-                        echo "<td><a href=clientes.php?ref=" . base64_encode($_GET['id']) . "&acao=" . base64_encode($_GET['acao']) . " type='submit' class='btn btn-info ml-3' name='btnSelecionar'>Selecionar</a></td>";
-                        echo "</tr>";
+                        $varBusca = base64_decode($_GET['varBusca']);
+                        if($varBusca == 'NOME') {
+                            $select = "Select * from clientes WHERE nome='" . base64_decode($_GET['nome']) . "'";
+                        } else if($varBusca == 'CPF') {
+                            $select = "Select * from clientes WHERE cpf = '" . base64_decode($_GET['cpf']) . "'";
+                        } else if($varBusca == 'ENDERECO') {
+                            $select = "Select * from clientes WHERE endereco = '" . base64_decode($_GET['endereco']) . "'";
+                        } else if($varBusca == 'TELEFONE') {
+                            $select = "Select * from clientes WHERE telefone ='" . base64_decode($_GET['telefone']) . "'";
+                        } else if($varBusca == 'EMAIL') {
+                            $select = "Select * from clientes WHERE email= '" . base64_decode($_GET['email']) . "'";
+                        } 
+                        $query = mysqli_query($con, $select);
+                        //retorna os dados existentes na tabela
+                        while ($result = mysqli_fetch_assoc($query)) {
+                            echo "<tr>";
+                            echo "<td>" . $result['id'] . "</td>";
+                            echo "<td>" . $result['nome'] . "</td>";
+                            echo "<td>" . $result['cpf'] . "</td>";
+                            echo "<td>" . $result['endereco'] . "</td>";
+                            echo "<td>" . $result['telefone'] . "</td>";
+                            echo "<td>" . $result['email'] . "</td>";
+                            echo "<td><a href=clientes.php?ref=" . base64_encode($result['id']) . " type='submit' class='btn btn-info ml-3' name='btnSelecionar'>Selecionar</a></td>";
+                            echo "</tr>";
+                        }
+                    }
+                    else if (base64_decode($_GET['acao']) == "alterar") {
+                        //instrução select 
+                        $select = "Select * from clientes;";
+                        $query = mysqli_query($con, $select);
+                        //retorna os dados existentes na tabela
+                        while ($result = mysqli_fetch_assoc($query)) {
+                            echo "<tr>";
+                            echo "<td>" . $result['id'] . "</td>";
+                            echo "<td>" . $result['nome'] . "</td>";
+                            echo "<td>" . $result['cpf'] . "</td>";
+                            echo "<td>" . $result['endereco'] . "</td>";
+                            echo "<td>" . $result['telefone'] . "</td>";
+                            echo "<td>" . $result['email'] . "</td>";
+                            echo "<td><a href=clientes.php?ref=" . base64_encode($result['id']) . " type='submit' class='btn btn-info ml-3' name='btnSelecionar'>Selecionar</a></td>";
+                            echo "</tr>";
+                        }
+                    }
+                    else if (base64_decode($_GET['acao']) == "excluir") {
+                        //instrução select 
+                        $select = "Select * from clientes;";
+                        $query = mysqli_query($con, $select);
+                        //retorna os dados existentes na tabela
+                        while ($result = mysqli_fetch_assoc($query)) {
+                            echo "<tr>";
+                            echo "<td>" . $result['id'] . "</td>";
+                            echo "<td>" . $result['nome'] . "</td>";
+                            echo "<td>" . $result['cpf'] . "</td>";
+                            echo "<td>" . $result['endereco'] . "</td>";
+                            echo "<td>" . $result['telefone'] . "</td>";
+                            echo "<td>" . $result['email'] . "</td>";
+                            echo "<td><a href=clientes.php?ref=" . base64_encode($result['id']) . " type='submit' class='btn btn-info ml-3' name='btnSelecionar'>Selecionar</a></td>";
+                            echo "</tr>";
+                        }
                     }
                     ?>
 

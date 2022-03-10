@@ -12,7 +12,8 @@ session_start();
     <title>Produtos</title>
 
     <!-- CSS do Bootstrap -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link href="css/dashboard.css" rel="stylesheet">
 
 </head>
@@ -141,11 +142,11 @@ session_start();
             <button type="submit" class="btn btn-secondary ml-3" name="btnBuscar">Buscar</button>
             <button type="submit" class="btn btn-warning ml-3" name="btnAlterar">Alterar</button>
             <button type="submit" class="btn btn-danger ml-3" name="btnExcluir">Excluir</button>
-            <button type="submit" class="btn btn-info ml-3" name="btnLimpar">Limpar</button>
+            <button type="reset" class="btn btn-info ml-3" name="btnLimpar">Limpar</button>
         </form>
         <br>
-
-        <h4>Usuários cadastrados</h4>
+        
+        <h4>Produtos cadastrados</h4>
         <!--Tabela com os registros dos produtos-->
         <div class="table-responsive">
             <table class="table table-hover table-sm">
@@ -162,10 +163,11 @@ session_start();
                 <tbody>
 
                     <?php
-                    //instrução select 
-                    $select = "Select * from produtos;";
-                    $query = mysqli_query($con, $select);
-                   
+                    if (!isset($_GET['acao'])) {
+                        $_GET['acao'] = "";
+                        //instrução select 
+                        $select = "Select * from produtos;";
+                        $query = mysqli_query($con, $select);
                         //retorna os dados existentes na tabela
                         while ($result = mysqli_fetch_assoc($query)) {
                             echo "<tr>";
@@ -177,18 +179,79 @@ session_start();
                             echo "<td><a href=produtos.php?ref=" . base64_encode($result['id']) . " type='submit' class='btn btn-info ml-3' name='btnSelecionar'>Selecionar</a></td>";
                             echo "</tr>";
                         }
-                        if (!isset($_GET['acao'])) {
-                            $_GET['acao'] = "";
+                    }
+                    else if (base64_decode($_GET['acao']) == "inserir"){
+                        //instrução select 
+                        $select = "Select * from produtos;";
+                        $query = mysqli_query($con, $select);
+                        //retorna os dados existentes na tabela
+                        while ($result = mysqli_fetch_assoc($query)) {
+                            echo "<tr>";
+                            echo "<td>" . $result['id'] . "</td>";
+                            echo "<td>" . $result['nome'] . "</td>";
+                            echo "<td>" . $result['tipo'] . "</td>";
+                            echo "<td>" . $result['estoque'] . "</td>";
+                            echo "<td>" . $result['preco'] . "</td>";
+                            echo "<td><a href=produtos.php?ref=" . base64_encode($result['id']) . " type='submit' class='btn btn-info ml-3' name='btnSelecionar'>Selecionar</a></td>";
+                            echo "</tr>";
                         }
-                        else if (base64_decode($_GET['acao']) == "buscar") {
-                        echo "<tr>";
-                        echo "<td>" . base64_decode($_GET['id']) . "</td>";
-                        echo "<td>" . base64_decode($_GET['nome']) . "</td>";
-                        echo "<td>" . base64_decode($_GET['tipo']) . "</td>";
-                        echo "<td>" . base64_decode($_GET['estoque']) . "</td>";
-                        echo "<td>" . base64_decode($_GET['preco']) . "</td>";
-                        echo "<td><a href=produtos.php?ref=" . base64_encode($_result['id']) . " type='submit' class='btn btn-info ml-3' name='btnSelecionar'>Selecionar</a></td>";
-                        echo "</tr>";
+                    }
+                    
+                    else if (base64_decode($_GET['acao']) == "buscar") {
+                        $varBusca = base64_decode($_GET['varBusca']);
+                        if($varBusca == 'NOME') {
+                            $select = "Select * from produtos WHERE nome LIKE '%" . base64_decode($_GET['nome']) . "%'";
+                        } else if($varBusca == 'TIPO') {
+                            $select = "Select * from produtos WHERE tipo LIKE '%" . base64_decode($_GET['tipo']) . "%'";
+                        } else if($varBusca == 'ESTOQUE') {
+                            $select = "Select * from produtos WHERE estoque = '" . base64_decode($_GET['estoque']) . "'";
+                        } else if($varBusca == 'PRECO') {
+                            $select = "Select * from produtos WHERE preco ='" . base64_decode($_GET['preco']) . "'";
+                        }
+                        $query = mysqli_query($con, $select);
+                        //retorna os dados existentes na tabela
+                        while ($result = mysqli_fetch_assoc($query)) {
+                            echo "<tr>";
+                            echo "<td>" . $result['id'] . "</td>";
+                            echo "<td>" . $result['nome'] . "</td>";
+                            echo "<td>" . $result['tipo'] . "</td>";
+                            echo "<td>" . $result['estoque'] . "</td>";
+                            echo "<td>" . $result['preco'] . "</td>";
+                            echo "<td><a href=produtos.php?ref=" . base64_encode($result['id']) . " type='submit' class='btn btn-info ml-3' name='btnSelecionar'>Selecionar</a></td>";
+                            echo "</tr>";
+                        }
+                    }
+                    else if (base64_decode($_GET['acao']) == "alterar"){
+                        //instrução select 
+                        $select = "Select * from produtos;";
+                        $query = mysqli_query($con, $select);
+                        //retorna os dados existentes na tabela
+                        while ($result = mysqli_fetch_assoc($query)) {
+                            echo "<tr>";
+                            echo "<td>" . $result['id'] . "</td>";
+                            echo "<td>" . $result['nome'] . "</td>";
+                            echo "<td>" . $result['tipo'] . "</td>";
+                            echo "<td>" . $result['estoque'] . "</td>";
+                            echo "<td>" . $result['preco'] . "</td>";
+                            echo "<td><a href=produtos.php?ref=" . base64_encode($result['id']) . " type='submit' class='btn btn-info ml-3' name='btnSelecionar'>Selecionar</a></td>";
+                            echo "</tr>";
+                        }
+                    }
+                    else if (base64_decode($_GET['acao']) == "excluir"){
+                        //instrução select 
+                        $select = "Select * from produtos;";
+                        $query = mysqli_query($con, $select);
+                        //retorna os dados existentes na tabela
+                        while ($result = mysqli_fetch_assoc($query)) {
+                            echo "<tr>";
+                            echo "<td>" . $result['id'] . "</td>";
+                            echo "<td>" . $result['nome'] . "</td>";
+                            echo "<td>" . $result['tipo'] . "</td>";
+                            echo "<td>" . $result['estoque'] . "</td>";
+                            echo "<td>" . $result['preco'] . "</td>";
+                            echo "<td><a href=produtos.php?ref=" . base64_encode($result['id']) . " type='submit' class='btn btn-info ml-3' name='btnSelecionar'>Selecionar</a></td>";
+                            echo "</tr>";
+                        }
                     }
                     ?>
 
@@ -200,9 +263,15 @@ session_start();
     <?php include 'footer.php' ?>
 
     <!-- JavaScript do Bootstrap -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+    </script>
     <script>
     window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')
     </script>

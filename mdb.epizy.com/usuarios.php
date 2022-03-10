@@ -43,16 +43,44 @@ session_start();
             <?php if (!isset($_GET['msg'])){
                 $msg="";
             ?>
-            <?php } else if (base64_decode($_GET['msg']) == "success") { ?>
+            <?php } else if (base64_decode($_GET['msg']) == "success" && base64_decode($_GET['acao']) == "inserir") { ?>
             <div class="alert alert-success alert-dismissible fade show" role="alert">
-                Usuário cadastrado(alterado/excluído) com sucesso!
+                Usuário cadastrado com sucesso!
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <?php } else if (base64_decode($_GET['msg']) == "danger") { ?>
+            <?php } else if (base64_decode($_GET['msg']) == "danger" && base64_decode($_GET['acao']) == "inserir") { ?>
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                Usuário não foi cadastrado(alterado/excluído) com sucesso,tente novamente!
+                Usuário não foi cadastrado com sucesso,tente novamente!
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <?php } else if (base64_decode($_GET['msg']) == "success" && base64_decode($_GET['acao']) == "alterar") { ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                Usuário alterado com sucesso!
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <?php } else if (base64_decode($_GET['msg']) == "danger" && base64_decode($_GET['acao']) == "alterar") { ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                Usuário não foi alterar com sucesso,tente novamente!
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <?php } else if (base64_decode($_GET['msg']) == "success" && base64_decode($_GET['acao']) == "excluir") { ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                Usuário excluído com sucesso!
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <?php } else if (base64_decode($_GET['msg']) == "danger" && base64_decode($_GET['acao']) == "excluir") { ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                Usuário não foi excluído com sucesso,tente novamente!
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -72,33 +100,33 @@ session_start();
             <!--Formulário usuários-->
             <div class="form-group col-2">
                 <label for="id">ID:</label>
-                <input type="text" class="form-control" name="txtId"
+                <input type="text" class="form-control" name="txtId" id="txtId"
                     value="<?php echo base64_decode($_GET['ref']) ? $result['id'] : "" ?>" readonly>
             </div>
 
             <div class="form-group col-6">
                 <label for="nome">Nome:</label>
-                <input type="text" class="form-control" placeholder="Nome" name="txtNome"
+                <input type="text" class="form-control" placeholder="Nome" name="txtNome" id="txtNome"
                     value="<?php echo base64_decode($_GET['ref']) ? $result['nome'] : "" ?>">
             </div>
             <div class="form-group col-6">
                 <label for="telefone">Telefone:</label>
-                <input type="text" class="form-control" placeholder="Telefone" name="txtTelefone"
+                <input type="text" class="form-control" placeholder="Telefone" name="txtTelefone" id="txtTelefone"
                     value="<?php echo base64_decode($_GET['ref']) ? $result['telefone'] : "" ?>">
             </div>
             <div class="form-group col-6">
                 <label for="email">Email:</label>
-                <input type="email" class="form-control" placeholder="Email" name="txtEmail"
+                <input type="email" class="form-control" placeholder="Email" name="txtEmail" id="txtEmail"
                     value="<?php echo base64_decode($_GET['ref']) ? $result['email'] : "" ?>">
             </div>
             <div class="form-group col-6">
                 <label for="login">Login:</label>
-                <input type="text" class="form-control" placeholder="Login" name="txtLogin"
+                <input type="text" class="form-control" placeholder="Login" name="txtLogin" id="txtLogin"
                     value="<?php echo base64_decode($_GET['ref']) ? $result['login'] : "" ?>">
             </div>
             <div class="form-group col-6">
                 <label for="senha">Senha:</label>
-                <input type="password" class="form-control" placeholder="Senha" name="txtSenha"
+                <input type="password" class="form-control" placeholder="Senha" name="txtSenha" id="txtSenha"
                     value="<?php echo base64_decode($_GET['ref']) ? $result['senha'] : "" ?>">
             </div>
             <div class="form-group col-6">
@@ -114,7 +142,7 @@ session_start();
             <button type="submit" class="btn btn-secondary ml-3" name="btnBuscar">Buscar</button>
             <button type="submit" class="btn btn-warning ml-3" name="btnAlterar">Alterar</button>
             <button type="submit" class="btn btn-danger ml-3" name="btnExcluir">Excluir</button>
-            <button type="reset" class="btn btn-info ml-3" name="btnLimpar">Limpar</button>
+            <button type="button" class="btn btn-info ml-3" name="btnLimpar" onclick="limpaDados()">Limpar</button>
         </form>
         <br>
         <h4>Usuários cadastrados</h4>
@@ -136,38 +164,127 @@ session_start();
                 <tbody>
 
                     <?php
-                    //instrução select 
-                    $select = "Select * from usuarios;";
-                    $query = mysqli_query($con, $select);
-            
-                    //retorna os dados existentes na tabela
-                    while ($result = mysqli_fetch_assoc($query)) {
-                        echo "<tr>";
-                        echo "<td>" . $result['id'] . "</td>";
-                        echo "<td>" . $result['nome'] . "</td>";
-                        echo "<td>" . $result['telefone'] . "</td>";
-                        echo "<td>" . $result['email'] . "</td>";
-                        echo "<td>" . $result['login'] . "</td>";
-                        echo "<td>" . $result['senha'] . "</td>";
-                        echo "<td>" . $result['acesso'] . "</td>";
-                        echo "<td><a href=usuarios.php?ref=" . base64_encode($result['id']) . " type='submit' class='btn btn-info ml-3' name='btnSelecionar'>Selecionar</a></td>";
-                        echo "</tr>";
-                    }
                     if(!isset($_GET['acao'])){
                         $_GET['acao']="";
+                        if($_SESSION['acesso'] == "acesso total"){
+                            //instrução select 
+                            $select = "Select * from usuarios;";
+                            $query = mysqli_query($con, $select);
+                            //retorna os dados existentes na tabela
+                            while ($result = mysqli_fetch_assoc($query)) {
+                                echo "<tr>";
+                                echo "<td>" . $result['id'] . "</td>";
+                                echo "<td>" . $result['nome'] . "</td>";
+                                echo "<td>" . $result['telefone'] . "</td>";
+                                echo "<td>" . $result['email'] . "</td>";
+                                echo "<td>" . $result['login'] . "</td>";
+                                echo "<td>" . $result['senha'] . "</td>";
+                                echo "<td>" . $result['acesso'] . "</td>";
+                                echo "<td><a href=usuarios.php?ref=" . base64_encode($result['id']) . " type='submit' class='btn btn-info ml-3' name='btnSelecionar'>Selecionar</a></td>";
+                                echo "</tr>";
+                            }
+                        }
+                        else{
+                            //instrução select 
+                            $select = "Select * from usuarios;";
+                            $query = mysqli_query($con, $select);
+                            //retorna os dados existentes na tabela
+                            while ($result = mysqli_fetch_assoc($query)) {
+                                echo "<tr>";
+                                echo "<td>" . $result['id'] . "</td>";
+                                echo "<td>" . $result['nome'] . "</td>";
+                                echo "<td>" . $result['telefone'] . "</td>";
+                                echo "<td>" . $result['email'] . "</td>";
+                                echo "<td>" . $result['login'] . "</td>";
+                                echo "<td>" . '*****' . "</td>";
+                                echo "<td>" . $result['acesso'] . "</td>";
+                                echo "<td><a href=usuarios.php?ref=" . base64_encode($result['id']) . " type='submit' class='btn btn-info ml-3' name='btnSelecionar'>Selecionar</a></td>";
+                                echo "</tr>";
+                            }
+                        }
+                    }
+                    else if (base64_decode($_GET['acao']) == "inserir") {
+                        $select = "Select * from usuarios;";
+                        $query = mysqli_query($con, $select);
+                        //retorna os dados existentes na tabela
+                        while ($result = mysqli_fetch_assoc($query)) {
+                            echo "<tr>";
+                            echo "<td>" . $result['id'] . "</td>";
+                            echo "<td>" . $result['nome'] . "</td>";
+                            echo "<td>" . $result['telefone'] . "</td>";
+                            echo "<td>" . $result['email'] . "</td>";
+                            echo "<td>" . $result['login'] . "</td>";
+                            echo "<td>" . $result['senha'] . "</td>";
+                            echo "<td>" . $result['acesso'] . "</td>";
+                            echo "<td><a href=usuarios.php?ref=" . base64_encode($result['id']) . " type='submit' class='btn btn-info ml-3' name='btnSelecionar'>Selecionar</a></td>";
+                            echo "</tr>";
+                        }
                     }    
                     else if (base64_decode($_GET['acao']) == "buscar") {
-                        echo "<tr>";
-                        echo "<td>" . base64_decode($_GET['id']) . "</td>";
-                        echo "<td>" . base64_decode($_GET['nome']) . "</td>";
-                        echo "<td>" . base64_decode($_GET['telefone']) . "</td>";
-                        echo "<td>" . base64_decode($_GET['email']) . "</td>";
-                        echo "<td>" . base64_decode($_GET['login']) . "</td>";
-                        echo "<td>" . base64_decode($_GET['senha']) . "</td>";
-                        echo "<td>" . base64_decode($_GET['acesso']) . "</td>";
-                        echo "<td><a href=usuarios.php?ref=" . base64_encode($_GET['id']) . " type='submit' class='btn btn-info ml-3' name='btnSelecionar'>Selecionar</a></td>";
-                        echo "</tr>";
+                        $varBusca = base64_decode($_GET['varBusca']);
+                        if($varBusca == 'NOME') {
+                            $select = "Select * from usuarios WHERE nome LIKE '%" . base64_decode($_GET['nome']) . "%'";
+                        } else if($varBusca == 'TELEFONE') {
+                            $select = "Select * from usuarios WHERE telefone =" . base64_decode($_GET['telefone']) . "'";
+                        } else if($varBusca == 'EMAIL') {
+                            $select = "Select * from usuarios WHERE email LIKE '%" . base64_decode($_GET['email']) . "%'";
+                        } else if($varBusca == 'LOGIN') {
+                            $select = "Select * from usuarios WHERE login LIKE '%" . base64_decode($_GET['login']) . "%'";
+                        } else if($varBusca == 'SENHA') {
+                            $select = "Select * from usuarios WHERE senha ='" . base64_decode($_GET['senha']) . "'";
+                        } else if($varBusca == 'ACESSO') {
+                            $select = "Select * from usuarios WHERE acesso LIKE '%" . base64_decode($_GET['acesso']) . "%'";
+                        }
+                        $query = mysqli_query($con, $select);
+                        //retorna os dados existentes na tabela
+                        while ($result = mysqli_fetch_assoc($query)) {
+                            echo "<tr>";
+                            echo "<td>" . $result['id'] . "</td>";
+                            echo "<td>" . $result['nome'] . "</td>";
+                            echo "<td>" . $result['telefone'] . "</td>";
+                            echo "<td>" . $result['email'] . "</td>";
+                            echo "<td>" . $result['login'] . "</td>";
+                            echo "<td>" . $result['senha'] . "</td>";
+                            echo "<td>" . $result['acesso'] . "</td>";
+                            echo "<td><a href=usuarios.php?ref=" . base64_encode($result['id']) . " type='submit' class='btn btn-info ml-3' name='btnSelecionar'>Selecionar</a></td>";
+                            echo "</tr>";
+                        }
                     }
+                    else if (base64_decode($_GET['acao']) == "alterar") {
+                        $select = "Select * from usuarios;";
+                        $query = mysqli_query($con, $select);
+                        //retorna os dados existentes na tabela
+                        while ($result = mysqli_fetch_assoc($query)) {
+                            echo "<tr>";
+                            echo "<td>" . $result['id'] . "</td>";
+                            echo "<td>" . $result['nome'] . "</td>";
+                            echo "<td>" . $result['telefone'] . "</td>";
+                            echo "<td>" . $result['email'] . "</td>";
+                            echo "<td>" . $result['login'] . "</td>";
+                            echo "<td>" . $result['senha'] . "</td>";
+                            echo "<td>" . $result['acesso'] . "</td>";
+                            echo "<td><a href=usuarios.php?ref=" . base64_encode($result['id']) . " type='submit' class='btn btn-info ml-3' name='btnSelecionar'>Selecionar</a></td>";
+                            echo "</tr>";
+                        }
+                    } 
+                    else if (base64_decode($_GET['acao']) == "excluir") {
+                        $select = "Select * from usuarios;";
+                        $query = mysqli_query($con, $select);
+                        //retorna os dados existentes na tabela
+                        while ($result = mysqli_fetch_assoc($query)) {
+                            echo "<tr>";
+                            echo "<td>" . $result['id'] . "</td>";
+                            echo "<td>" . $result['nome'] . "</td>";
+                            echo "<td>" . $result['telefone'] . "</td>";
+                            echo "<td>" . $result['email'] . "</td>";
+                            echo "<td>" . $result['login'] . "</td>";
+                            echo "<td>" . $result['senha'] . "</td>";
+                            echo "<td>" . $result['acesso'] . "</td>";
+                            echo "<td><a href=usuarios.php?ref=" . base64_encode($result['id']) . " type='submit' class='btn btn-info ml-3' name='btnSelecionar'>Selecionar</a></td>";
+                            echo "</tr>";
+                        }
+                    } 
+                    
                     ?>
 
                 </tbody>
@@ -191,6 +308,18 @@ session_start();
     <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
     <script>
     feather.replace()
+    </script>
+
+    <!--Limpa tela-->
+    <script>
+        function limpaDados(){
+            document.getElementById('txtId').value = "";
+            document.getElementById('txtNome').value = "";
+            document.getElementById('txtTelefone').value = "";
+            document.getElementById('txtEmail').value = "";
+            document.getElementById('txtLogin').value = "";
+            document.getElementById('txtSenha').value = "";
+        }
     </script>
 </body>
 

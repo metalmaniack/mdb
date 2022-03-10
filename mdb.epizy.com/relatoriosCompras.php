@@ -45,7 +45,22 @@ session_start();
                     <label for="idCompra">ID Compra:</label>
                     <input type="text" class="form-control" name="txtIdCompra">
                 </div>
-
+                <div class="form-group p-2 col-sm-2">
+                    <label for="data">Data:</label>
+                    <input type="text" class="form-control" name="txtDataCompra" placeholder="dd-mm-aaaa">
+                </div>
+                <div class="form-group p-2 col-sm-2">
+                    <label for="status">Status:</label>
+                    <input type="text" class="form-control" name="txtStatusCompra">
+                </div>
+                <div class="form-group p-2 col-sm-2">
+                    <label for="fornecedor">Fornecedor:</label>
+                    <input type="text" class="form-control" name="txtFornecedor">
+                </div>
+                <div class="form-group p-2 col-sm-2">
+                    <label for="total">Total(R$):</label>
+                    <input type="text" class="form-control" name="txtTotalCompra" placeholder="0.00">
+                </div>
                 <div class="form-group pt-3 mt-4">
                     <button type="submit" class="btn btn-primary ml-2" name="btnBuscaCompra"><span
                             data-feather="search"></button>
@@ -53,7 +68,7 @@ session_start();
             </div>
         </form>
         <h4>Tabela de Compras </h4>
-        <!--Tabela com os produtos inseridos(carrinho de compras)-->
+        <!--Tabela com os compras inseridos(carrinho de compras)-->
         <div class="table-responsive">
             <table class="table table-hover table-sm">
                 <thead class="thead-light">
@@ -68,10 +83,10 @@ session_start();
                 <tbody>
 
                     <?php
-                        if (!isset($_GET['idCompra'])) {
-                            $_GET['idCompra'] = "";
+                        if (!isset($_GET['acao'])) {
+                            $_GET['acao'] = "";
                             //instrução select
-                            $select = "Select * from compras order by data ASC";
+                            $select = "Select * from compras";
                             $query = mysqli_query($con, $select);
                             //retorna os dados existentes na tabela
                             while ($result = mysqli_fetch_assoc($query)) {
@@ -84,18 +99,32 @@ session_start();
                                 echo "</tr>";
                             }
                         }   
-                        else {
-                            //instrução select
-                            $selectCompra = "Select * from compras where idCompra=".$_GET['idCompra']."";
-                            $queryCompra = mysqli_query($con, $selectCompra);
+                        else if (base64_decode($_GET['acao']) == "buscarCompra"){
+                            $varBusca = base64_decode($_GET['varBusca']);
+                            if($varBusca == 'IDCOMPRA') {
+                                $select = "Select * from compras WHERE idCompra = '" . base64_decode($_GET['idCompra']) . "'";
+                            } 
+                            else if($varBusca == 'DATA') {
+                                $select = "Select * from compras WHERE data = '" . base64_decode($_GET['data']) . "'";
+                            } 
+                            else if($varBusca == 'STATUS') {
+                                $select = "Select * from compras WHERE status LIKE '%" . base64_decode($_GET['status']) . "%'";
+                            } 
+                            else if($varBusca == 'FORNECEDOR') {
+                                $select = "Select * from compras WHERE fk_idFornecedor LIKE '%" . base64_decode($_GET['fk_idFornecedor']) . "%'";
+                            } 
+                            else if($varBusca == 'TOTAL') {
+                                $select = "Select * from compras WHERE total = '" . base64_decode($_GET['totalCompra']) . "'";
+                            }
+                            $query = mysqli_query($con, $select);
                             //retorna os dados existentes na tabela
-                            while ($resultCompra = mysqli_fetch_assoc($queryCompra)) {
+                            while ($result = mysqli_fetch_assoc($query)) {
                                 echo "<tr>";
-                                echo "<td>" . $resultCompra['idCompra'] . "</td>";
-                                echo "<td>" . date("d-m-Y", strtotime($resultCompra['data'])) . "</td>";
-                                echo "<td>" . $resultCompra['status'] . "</td>";
-                                echo "<td>" . $resultCompra['fk_idFornecedor'] . "</td>";
-                                echo "<td>" . number_format($resultCompra['total'], 2, ',', '.') . "</td>";
+                                echo "<td>" . $result['idCompra'] . "</td>";
+                                echo "<td>" . date("d-m-Y", strtotime($result['data'])) . "</td>";
+                                echo "<td>" . $result['status'] . "</td>";
+                                echo "<td>" . $result['fk_idFornecedor'] . "</td>";
+                                echo "<td>" . number_format($result['total'], 2, ',', '.') . "</td>";
                                 echo "</tr>";
                             }
                         }

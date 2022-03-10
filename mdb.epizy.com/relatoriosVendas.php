@@ -44,6 +44,22 @@ session_start();
                     <label for="idVenda">ID Venda:</label>
                     <input type="text" class="form-control" name="txtIdVenda">
                 </div>
+                <div class="form-group p-2 col-sm-2">
+                    <label for="dataVenda">Data:</label>
+                    <input type="text" class="form-control" name="txtDataVenda" placeholder="dd-mm-aaaa">
+                </div>
+                <div class="form-group p-2 col-sm-2">
+                    <label for="statusVenda">Status:</label>
+                    <input type="text" class="form-control" name="txtStatusVenda">
+                </div>
+                <div class="form-group p-2 col-sm-2">
+                    <label for="cliente">Cliente:</label>
+                    <input type="text" class="form-control" name="txtCliente">
+                </div>
+                <div class="form-group p-2 col-sm-2">
+                    <label for="total">Total(R$):</label>
+                    <input type="text" class="form-control" name="txtTotalVenda" placeholder="0.00">
+                </div>
                 <div class="form-group pt-3 mt-4">
                     <button type="submit" class="btn btn-primary ml-2" name="btnBuscaVenda"><span
                             data-feather="search"></button>
@@ -66,10 +82,10 @@ session_start();
                 <tbody>
 
                     <?php
-                    if (!isset($_GET['idVenda'])) {
-                        $_GET['idVenda'] = "";
+                    if (!isset($_GET['acao'])) {
+                        $_GET['acao'] = "";
                         //instrução select
-                        $select = "Select * from vendas order by data ASC";
+                        $select = "Select * from vendas";
                         $query = mysqli_query($con, $select);
                         //retorna os dados existentes na tabela
                         while ($result = mysqli_fetch_assoc($query)) {
@@ -81,18 +97,29 @@ session_start();
                             echo "<td>" . number_format($result['total'], 2, ',', '.') . "</td>";
                             echo "</tr>";
                         }
-                    } else {
-                        //instrução select
-                        $selectVenda = "Select * from vendas where idVenda= ".$_GET['idVenda']."";
-                        $queryVenda = mysqli_query($con, $selectVenda);
+                    } 
+                    else if (base64_decode($_GET['acao']) == "buscarVenda"){
+                        $varBusca = base64_decode($_GET['varBusca']);
+                        if($varBusca == 'IDVENDA') {
+                            $select = "Select * from vendas WHERE idVenda = '" . base64_decode($_GET['idVenda']) . "'";
+                        } else if($varBusca == 'DATA') {
+                            $select = "Select * from vendas WHERE data = '" . base64_decode($_GET['data']) . "'";
+                        } else if($varBusca == 'STATUS') {
+                            $select = "Select * from vendas WHERE status LIKE '%" . base64_decode($_GET['status']) . "%'";
+                        } else if($varBusca == 'CLIENTE') {
+                            $select = "Select * from vendas WHERE fk_idCliente LIKE '%" . base64_decode($_GET['fk_idCliente']) . "%'";
+                        } else if($varBusca == 'TOTAL') {
+                            $select = "Select * from vendas WHERE total = '" . base64_decode($_GET['totalVenda']) . "'";
+                        }
+                        $query = mysqli_query($con, $select);
                         //retorna os dados existentes na tabela
-                        while ($resultVenda = mysqli_fetch_assoc($queryVenda)) {
+                        while ($result = mysqli_fetch_assoc($query)) {
                             echo "<tr>";
-                            echo "<td>" . $resultVenda['idVenda'] . "</td>";
-                            echo "<td>" . date("d-m-Y", strtotime($resultVenda['data'])) . "</td>";
-                            echo "<td>" . $resultVenda['status'] . "</td>";
-                            echo "<td>" . $resultVenda['fk_idCliente'] . "</td>";
-                            echo "<td>" . number_format($resultVenda['total'], 2, ',', '.') . "</td>";
+                            echo "<td>" . $result['idVenda'] . "</td>";
+                            echo "<td>" . date("d-m-Y", strtotime($result['data'])) . "</td>";
+                            echo "<td>" . $result['status'] . "</td>";
+                            echo "<td>" . $result['fk_idCliente'] . "</td>";
+                            echo "<td>" . number_format($result['total'], 2, ',', '.') . "</td>";
                             echo "</tr>";
                         }
                     }
